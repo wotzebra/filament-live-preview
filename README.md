@@ -1,8 +1,6 @@
-# A Filament plugin to add a preview screen to your pages. The screen will render your website with the data from Filament, without saving it.
+# Filament Live Preview
 
-## 
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+A Filament plugin to add a preview screen to your pages. The screen will render your website with the data from Filament, without saving it.
 
 ## Installation
 
@@ -10,13 +8,6 @@ You can install the package via composer:
 
 ```bash
 composer require wotz/filament-live-preview
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="filament-live-preview-migrations"
-php artisan migrate
 ```
 
 You can publish the config file with:
@@ -41,8 +32,6 @@ php artisan vendor:publish --tag="filament-live-preview-views"
 ## Usage
 
 ```php
-$filamentLivePreview = new Wotz\FilamentLivePreview();
-echo $filamentLivePreview->echoPhrase('Hello, Wotz!');
 ```
 
 ## Documentation

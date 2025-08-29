@@ -11,6 +11,8 @@
     "require": {
         "php": "^8.2",
         "illuminate/contracts": "^10.0 || ^11.0",
+        "livewire/livewire": "^3.6",
+        "pboivin/filament-peek": "3.0.0-beta1",
         "spatie/laravel-package-tools": "^1.12"
     },
     "require-dev": {
