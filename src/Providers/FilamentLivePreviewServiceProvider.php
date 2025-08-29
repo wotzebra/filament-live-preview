@@ -1,16 +1,16 @@
 <?php
 
-namespace VendorName\Skeleton\Providers;
+namespace Wotz\FilamentLivePreview\Providers;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class FilamentLivePreviewServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('skeleton')
+            ->name('filament-live-preview')
             ->setBasePath(__DIR__ . '/../')
             ->hasConfigFile()
             ->hasMigration('create_package_table');
