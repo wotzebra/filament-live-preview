@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "scripts": {
+        "build:scripts": "esbuild resources/js/live-preview/index.js --bundle --minify --outfile=resources/dist/filament-live-preview.js"
+    },
+    "devDependencies": {
+        "alpinejs": "^3.14",
+        "esbuild": "^0.25",
+        "lodash-es": "^4.17.21",
+        "npm-run-all": "^4.1",
+        "prettier": "^3.5"
+    }
+}
