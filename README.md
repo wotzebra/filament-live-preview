@@ -1,6 +1,6 @@
 # Filament Live Preview
 
-A Filament plugin to add a preview screen to your pages. The screen will render your website with the data from Filament, without saving it.
+A Filament plugin to add a preview screen to your pages using websockets. The screen will render your website with the data from Filament, without saving it. Heavily based on [Filament Peek](https://github.com/pboivin/filament-peek).
 
 ## Installation
 
@@ -27,11 +27,6 @@ Optionally, you can publish the views using
 
 ```bash
 php artisan vendor:publish --tag="filament-live-preview-views"
-```
-
-## Usage
-
-```php
 ```
 
 ## Documentation
