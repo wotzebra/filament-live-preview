@@ -20,14 +20,10 @@ class LivePreviewScreen extends Component
         $this->refreshPreview();
     }
 
-    #[Layout('layouts.app', [
-        'titleForLayout' => 'Live Preview',
-        'hasBgPattern' => false,
-        'bgColor' => 'bg-gradient-to-light',
-    ])]
     public function render()
     {
         return view($this->view)
+            ->layout('layouts.app', $this->data)
             ->with($this->data);
     }
 
