@@ -71,51 +71,34 @@
 }
 
 .filament-peek-device-presets {
-    display: none;
-    justify-content: center;
-}
+    @apply hidden justify-center xl:flex;
 
-@media screen and (min-width: 80rem) {
-    .filament-peek-device-presets {
-        display: flex;
+    button {
+        @apply mx-2 inline-flex flex-col items-center disabled:opacity-25;
+
+        svg {
+            @apply h-6 w-6;
+        }
+
+        &:after {
+            @apply mt-1 block h-1 w-1 rounded-full bg-transparent;
+            content: '';
+        }
+
+        &.is-active-device-preset:after {
+            @apply bg-current opacity-25;
+        }
     }
 }
 
-.filament-peek-device-presets button {
-    align-items: center;
-    display: inline-flex;
-    flex-direction: column;
-    margin-left: calc(var(--spacing) * 2);
-    margin-right: calc(var(--spacing) * 2);
+.filament-peek-rotate-preset {
+    svg {
+        @apply relative -top-1;
+    }
 }
 
-.filament-peek-device-presets button:disabled {
-    opacity: 0.25;
-}
-
-.filament-peek-device-presets button svg {
-    width: calc(var(--spacing) * 6);
-    height: calc(var(--spacing) * 6);
-}
-
-.filament-peek-device-presets button:after {
-    background-color: transparent;
-    content: '';
-    display: block;
-    height: calc(var(--spacing) * 1);
-    margin-top: calc(var(--spacing) * 1);
-    width: calc(var(--spacing) * 1);
-    border-radius: calc(infinity * 1px);
-}
-
-.filament-peek-device-presets button.is-active-device-preset:after {
-    background-color: currentColor;
-    top: calc(var(--spacing) * -1);
-}
-
-.filament-peek-rotate-preset svg {
-    position: relative;
-    top: calc(var(--spacing) * -1);
+.filament-peek-modal-actions {
+    @apply flex justify-end;
 }
 
 .filament-peek-modal-actions {

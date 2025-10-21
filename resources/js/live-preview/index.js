@@ -22,7 +22,7 @@ document.addEventListener('alpine:init', () => {
     init() {
       dispatch(document, 'peek:modal-initializing', { modal: this })
 
-      const debounceTime = this.config.editorAutoRefreshDebounceTime || 100
+      const debounceTime = this.config.editorAutoRefreshDebounceTime || 1000
 
       this.refreshPreview = debounce(() => Livewire.dispatch('refreshPreview'), debounceTime)
 
@@ -137,6 +137,11 @@ document.addEventListener('peek:modal-initialized', (event) => {
     const refreshPreviewEvent = () => $modal.refreshPreview()
 
     window.addEventListener('input', refreshPreviewEvent)
+    window.addEventListener('change', refreshPreviewEvent)
     window.addEventListener('submit', refreshPreviewEvent)
+
+    Livewire.hook('commit.prepare', (data) => {
+      refreshPreviewEvent()
+    })
   }
 })
