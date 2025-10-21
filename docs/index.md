@@ -38,7 +38,7 @@ php artisan vendor:publish --tag="filament-live-preview-views"
 
 Follow the Laravel Reverb installation instructions [here](https://laravel.com/docs/12.x/reverb)
 
-#### Fix Livewire and Reverb
+#### Fix Livewire and Websockets
 
 In `bootstrap/app.php`, add the following lines:
 
@@ -198,4 +198,20 @@ In `routes/channels.php`, add the following line:
 
 ```php
 Broadcast::channel('live-preview', function () {});
+```
+
+#### Blade files
+
+If you load a blade file which loads a Livewire component, it wil break the live preview for some unknown reason.
+
+This can be fixed by wrapping the Livewire component in a conditional, like this:
+
+```blade
+@if (! is_live_preview_request())
+    <livewire:filters />
+@else
+    {{ __('filament-live-preview::alert.preview unavailable for :name', [
+        'name' => "filters"
+    ]) }}
+@endif
 ```

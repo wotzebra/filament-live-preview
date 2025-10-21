@@ -15,7 +15,9 @@ class LivePreviewScreen extends Component
 
     public function mount()
     {
-        abort_unless($this->token = request()->query('token'), 404);
+        $this->token = request()->query('token');
+
+        abort_unless(filled($this->token), 404);
 
         $this->refreshPreview();
     }

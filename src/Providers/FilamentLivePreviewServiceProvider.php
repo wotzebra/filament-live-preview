@@ -13,6 +13,7 @@ class FilamentLivePreviewServiceProvider extends PackageServiceProvider
             ->name('filament-live-preview')
             ->setBasePath(__DIR__ . '/../')
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasRoute('web')
             ->hasViews();
     }
