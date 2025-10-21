@@ -139,9 +139,6 @@ document.addEventListener('peek:modal-initialized', (event) => {
     window.addEventListener('input', refreshPreviewEvent)
     window.addEventListener('change', refreshPreviewEvent)
     window.addEventListener('submit', refreshPreviewEvent)
-
-    Livewire.hook('commit.prepare', (data) => {
-      refreshPreviewEvent()
-    })
+    window.addEventListener('pointerout', refreshPreviewEvent)
   }
 })
