@@ -15,8 +15,6 @@ document.addEventListener('alpine:init', () => {
     iframeStyle: {
       width: '100%',
       height: '100%',
-      maxWidth: '100%',
-      maxHeight: '100%'
     },
 
     init() {
@@ -34,20 +32,14 @@ document.addEventListener('alpine:init', () => {
     },
 
     setIframeDimensions(width, height) {
-      this.iframeStyle.maxWidth = width
-      this.iframeStyle.maxHeight = height
-
-      if (this.config.allowIframeOverflow) {
-        this.iframeStyle.width = width
-        this.iframeStyle.height = height
-      }
+      this.iframeStyle.width = width
+      this.iframeStyle.height = height
     },
 
     setDevicePreset(name) {
       name = name || this.config.initialDevicePreset
 
-      if (!this.config.devicePresets) return
-      if (!this.config.devicePresets[name]) return
+      if (!this.config.devicePresets?.[name]) return
       if (!this.config.devicePresets[name].width) return
       if (!this.config.devicePresets[name].height) return
 
@@ -66,10 +58,10 @@ document.addEventListener('alpine:init', () => {
     },
 
     rotateDevicePreset() {
-      const newMaxWidth = this.iframeStyle.maxHeight
-      const newMaxHeight = this.iframeStyle.maxWidth
+      const newWidth = this.iframeStyle.height
+      const newHeight = this.iframeStyle.width
 
-      this.setIframeDimensions(newMaxWidth, newMaxHeight)
+      this.setIframeDimensions(newWidth, newHeight)
     },
 
     onOpenPreview($event) {

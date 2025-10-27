@@ -38,15 +38,6 @@
                             />
                         </button>
                     @endforeach
-
-                    <button
-                        type="button"
-                        class="filament-peek-rotate-preset"
-                        x-on:click="rotateDevicePreset()"
-                        x-bind:disabled="!canRotatePreset"
-                    >
-                        @include('filament-peek::partials.icon-rotate')
-                    </button>
                 </div>
             @endif
         </div>
