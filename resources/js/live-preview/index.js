@@ -128,9 +128,10 @@ document.addEventListener('peek:modal-initialized', (event) => {
   if (livePreviewForm) {
     const refreshPreviewEvent = () => $modal.refreshPreview()
 
-    window.addEventListener('input', refreshPreviewEvent)
-    window.addEventListener('change', refreshPreviewEvent)
+    livePreviewForm.addEventListener('input', refreshPreviewEvent)
+    livePreviewForm.addEventListener('change', refreshPreviewEvent)
     window.addEventListener('submit', refreshPreviewEvent)
-    window.addEventListener('pointerout', refreshPreviewEvent)
+    livePreviewForm.addEventListener('mouseup', refreshPreviewEvent)
+    livePreviewForm.addEventListener('keyup', refreshPreviewEvent)
   }
 })

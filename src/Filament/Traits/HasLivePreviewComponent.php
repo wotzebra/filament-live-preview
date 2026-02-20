@@ -11,6 +11,7 @@ use Pboivin\FilamentPeek\Facades\Peek;
 use Pboivin\FilamentPeek\Support\Cache;
 use Wotz\FilamentLivePreview\CachedPreview;
 use Wotz\FilamentLivePreview\Events\RefreshLivePreview;
+use Wotz\LocaleCollection\Facades\LocaleCollection;
 
 trait HasLivePreviewComponent
 {
@@ -118,6 +119,10 @@ trait HasLivePreviewComponent
                 $request = Request::create(request()->header('referer'));
 
                 $locale = $request->query('locale');
+
+                if (! LocaleCollection::firstLocale($locale)) {
+                    $locale = LocaleCollection::first()->locale();
+                }
 
                 CachedPreview::make(static::class, $view, $this->previewModalData, $locale)
                     ->put($this->token, config('filament-peek.internalPreviewUrl.cacheDuration', 60));
