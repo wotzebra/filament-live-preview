@@ -4,6 +4,7 @@ namespace Wotz\FilamentLivePreview\Filament\Traits;
 
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Livewire\Attributes\On;
 use Pboivin\FilamentPeek\CachedPreview;
@@ -22,6 +23,7 @@ trait HasLivePreviewComponent
     protected bool $shouldCallHooksBeforePreview = false;
 
     protected bool $shouldDehydrateBeforePreview = true;
+
     public string $token = '';
 
     public bool $isPreviewing = false;
@@ -92,7 +94,8 @@ trait HasLivePreviewComponent
             $record = $this->getRecord();
         }
 
-        \Illuminate\Support\Facades\Log::info($this->token, $this->data);
+        Log::info($this->token, $this->data);
+
         return array_merge(
             $this->initialPreviewModalData,
             [
@@ -187,7 +190,8 @@ trait HasLivePreviewComponent
             }
 
             RefreshLivePreview::dispatch();
-        } catch (Halt $exception) {}
+        } catch (Halt $exception) {
+        }
     }
 
     #[On('callMountedAction')]
