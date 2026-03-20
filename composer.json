@@ -9,7 +9,7 @@
     "homepage": "https://github.com/wotz/filament-live-preview",
     "license": "MIT",
     "require": {
-        "php": "^8.4",
+        "php": "^8.3",
         "illuminate/contracts": "^12.0 || ^13.0",
         "livewire/livewire": "^3.6",
         "pboivin/filament-peek": "^2.0 || ^3.0",
