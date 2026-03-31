@@ -2,7 +2,7 @@
 
 namespace Wotz\FilamentLivePreview\Livewire;
 
-use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Wotz\FilamentLivePreview\CachedPreview;
@@ -11,7 +11,9 @@ use Wotz\LocaleCollection\Facades\LocaleCollection;
 class LivePreviewScreen extends Component
 {
     public string $token;
+
     public string $view;
+
     public array $data = [];
 
     public function mount()
@@ -47,6 +49,6 @@ class LivePreviewScreen extends Component
         $this->view = $preview->view;
         $this->data = $preview->data;
 
-        \Illuminate\Support\Facades\Log::info('Live preview refreshed', [$this->view, $this->data]);
+        Log::info('Live preview refreshed', [$this->view, $this->data]);
     }
 }
