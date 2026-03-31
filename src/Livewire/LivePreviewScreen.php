@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Wotz\FilamentLivePreview\CachedPreview;
-use Wotz\LocaleCollection\Facades\LocaleCollection;
 
 class LivePreviewScreen extends Component
 {
