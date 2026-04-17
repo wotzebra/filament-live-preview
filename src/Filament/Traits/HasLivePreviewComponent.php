@@ -4,13 +4,15 @@ namespace Wotz\FilamentLivePreview\Filament\Traits;
 
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Livewire\Attributes\On;
-use Pboivin\FilamentPeek\CachedPreview;
 use Pboivin\FilamentPeek\Facades\Peek;
 use Pboivin\FilamentPeek\Support\Cache;
+use Wotz\FilamentLivePreview\CachedPreview;
 use Wotz\FilamentLivePreview\Events\RefreshLivePreview;
+use Wotz\LocaleCollection\Facades\LocaleCollection;
 
 trait HasLivePreviewComponent
 {
@@ -117,7 +119,15 @@ trait HasLivePreviewComponent
             } elseif (($view = $this->getPreviewModalView()) && config('filament-peek.internalPreviewUrl.enabled', false)) {
                 $this->token = app(Cache::class)->createPreviewToken();
 
-                CachedPreview::make(static::class, $view, $this->previewModalData)
+                $request = Request::create(request()->header('referer'));
+
+                $locale = $request->query('locale');
+
+                if (! LocaleCollection::firstLocale($locale)) {
+                    $locale = LocaleCollection::first()->locale();
+                }
+
+                CachedPreview::make(static::class, $view, $this->previewModalData, $locale)
                     ->put($this->token, config('filament-peek.internalPreviewUrl.cacheDuration', 60));
 
                 $previewModalUrl = route('live-preview-frame', [
@@ -183,7 +193,11 @@ trait HasLivePreviewComponent
             $this->previewModalData = $this->mutatePreviewModalData($this->preparePreviewModalData());
 
             if (($view = $this->getPreviewModalView()) && config('filament-peek.internalPreviewUrl.enabled', false)) {
-                CachedPreview::make(static::class, $view, $this->previewModalData)
+                $request = Request::create(request()->header('referer'));
+
+                $locale = $request->query('locale');
+
+                CachedPreview::make(static::class, $view, $this->previewModalData, $locale)
                     ->put($this->token, config('filament-peek.internalPreviewUrl.cacheDuration', 60));
             } else {
                 throw new InvalidArgumentException('Missing preview modal URL or Blade view.');

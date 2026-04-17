@@ -5,7 +5,7 @@ namespace Wotz\FilamentLivePreview\Livewire;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Pboivin\FilamentPeek\CachedPreview;
+use Wotz\FilamentLivePreview\CachedPreview;
 
 class LivePreviewScreen extends Component
 {
@@ -40,6 +40,10 @@ class LivePreviewScreen extends Component
     private function refreshPreview()
     {
         abort_unless((bool) $preview = CachedPreview::get($this->token), 404);
+
+        if ($preview->locale) {
+            app()->setLocale($preview->locale);
+        }
 
         $this->view = $preview->view;
         $this->data = $preview->data;
