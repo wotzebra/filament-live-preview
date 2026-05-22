@@ -84,27 +84,25 @@ use Filament\Schemas\Components\Section;public static function form(Schema $sche
 
 #### Update EditPage / CreatePage
 
+Add the `HasLivePreviewComponent` trait and the bundled preview action group to your header actions. The group exposes two entries: **Open in sidebar** (toggles the inline preview pane) and **Open in new tab** (opens the preview in a separate browser tab so it can be placed side-by-side on a second monitor).
+
 ```php
-use Filament\Actions\Action;
-use Filament\Resources\Pages\EditRecord;use Wotz\FilamentLivePreview\Filament\Traits\HasLivePreviewComponent;
+use Filament\Resources\Pages\EditRecord;
+use Wotz\FilamentLivePreview\Filament\Traits\HasLivePreviewComponent;
 
 class EditPage extends EditRecord
 {
     use HasLivePreviewComponent;
-    
+
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('preview')
-                ->label('Preview')
-                ->icon('heroicon-o-eye')
-                ->color('primary')
-                ->action(fn () => $this->toggleIsPreviewing()),
+            $this->getLivePreviewAction(),
             $this->getSaveFormAction()->submit(null)->action('save'),
             DeleteAction::make(),
         ];
     }
-    
+
     protected function getPreviewModalView(): ?string
     {
         // This corresponds to resources/views/posts/preview.blade.php
@@ -124,6 +122,8 @@ class EditPage extends EditRecord
     }
 }
 ```
+
+If you only want one of the two entries, call `toggleIsPreviewing()` (sidebar) or `openPreviewInNewTab()` directly from a custom action. For the new-tab variant, add `->extraAttributes(['data-live-preview-open-tab' => true])` to your action — the package's JS listens for that attribute and pre-opens a blank tab during the click, which is required to bypass popup blockers.
 
 See the [Peek](https://github.com/pboivin/filament-peek/blob/3.x/docs/page-previews.md#adding-extra-data-to-previews) docs for more details on how to customize the preview data.
 
