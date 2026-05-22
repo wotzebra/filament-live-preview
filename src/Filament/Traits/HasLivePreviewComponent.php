@@ -109,34 +109,8 @@ trait HasLivePreviewComponent
     #[On('openPreview')]
     public function openPreview(): void
     {
-        $previewModalUrl = null;
-
         try {
-            $this->previewModalData = $this->mutatePreviewModalData($this->preparePreviewModalData());
-
-            if ($previewModalUrl = $this->getPreviewModalUrl()) {
-                // pass
-            } elseif (($view = $this->getPreviewModalView()) && config('filament-peek.internalPreviewUrl.enabled', false)) {
-                $this->token = app(Cache::class)->createPreviewToken();
-
-                $request = Request::create(request()->header('referer'));
-
-                $locale = $request->query('locale');
-
-                if (! LocaleCollection::firstLocale($locale)) {
-                    $locale = LocaleCollection::first()->locale();
-                }
-
-                CachedPreview::make(static::class, $view, $this->previewModalData, $locale)
-                    ->put($this->token, config('filament-peek.internalPreviewUrl.cacheDuration', 60));
-
-                $previewModalUrl = route('live-preview-frame', [
-                    'token' => $this->token,
-                    'timestamp' => now()->timestamp,
-                ]);
-            } else {
-                throw new InvalidArgumentException('Missing preview modal URL or Blade view.');
-            }
+            $previewModalUrl = $this->buildPreviewUrl();
         } catch (Halt $exception) {
             $this->closePreview();
 
@@ -147,6 +121,52 @@ trait HasLivePreviewComponent
             'open-preview',
             iframeUrl: $previewModalUrl,
         );
+    }
+
+    public function openPreviewInNewTab(): void
+    {
+        try {
+            $previewUrl = $this->buildPreviewUrl();
+        } catch (Halt $exception) {
+            return;
+        }
+
+        $this->dispatch(
+            'open-preview-new-tab',
+            iframeUrl: $previewUrl,
+        );
+    }
+
+    /** @internal */
+    protected function buildPreviewUrl(): string
+    {
+        $this->previewModalData = $this->mutatePreviewModalData($this->preparePreviewModalData());
+
+        if ($previewModalUrl = $this->getPreviewModalUrl()) {
+            return $previewModalUrl;
+        }
+
+        if (! ($view = $this->getPreviewModalView()) || ! config('filament-peek.internalPreviewUrl.enabled', false)) {
+            throw new InvalidArgumentException('Missing preview modal URL or Blade view.');
+        }
+
+        $this->token = app(Cache::class)->createPreviewToken();
+
+        $request = Request::create(request()->header('referer'));
+
+        $locale = $request->query('locale');
+
+        if (! LocaleCollection::firstLocale($locale)) {
+            $locale = LocaleCollection::first()->locale();
+        }
+
+        CachedPreview::make(static::class, $view, $this->previewModalData, $locale)
+            ->put($this->token, config('filament-peek.internalPreviewUrl.cacheDuration', 60));
+
+        return route('live-preview-frame', [
+            'token' => $this->token,
+            'timestamp' => now()->timestamp,
+        ]);
     }
 
     /** @internal */

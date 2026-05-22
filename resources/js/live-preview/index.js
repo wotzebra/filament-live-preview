@@ -121,17 +121,132 @@ document.addEventListener('alpine:init', () => {
   dispatch(document, 'peek:initialized')
 })
 
-document.addEventListener('peek:modal-initialized', (event) => {
-  const $modal = event.detail.modal
+let livePreviewWindow = null
+let livePreviewSidebarOpen = false
+let newTabWatcher = null
+
+function hasNewTabConsumer() {
+  return livePreviewWindow && !livePreviewWindow.closed
+}
+
+function hasAnyPreviewConsumer() {
+  return livePreviewSidebarOpen || hasNewTabConsumer()
+}
+
+function startWatchingNewTab() {
+  if (newTabWatcher) return
+
+  newTabWatcher = setInterval(() => {
+    if (!hasNewTabConsumer()) {
+      clearInterval(newTabWatcher)
+      newTabWatcher = null
+    }
+  }, 1000)
+}
+
+// Sidebar open/close is signalled by the existing browser events the
+// PeekPreviewModal Alpine component already dispatches.
+window.addEventListener('open-preview', () => {
+  livePreviewSidebarOpen = true
+})
+window.addEventListener('close-preview', () => {
+  livePreviewSidebarOpen = false
+})
+
+// Bind form-input listeners as soon as a [data-live-preview-form] exists.
+// We don't gate this on `peek:modal-initialized` because the new-tab flow
+// may run without the sidebar modal ever being rendered. Inside the
+// debounced callback we bail out when no preview is actually being
+// watched — otherwise every keystroke would fire a Livewire round-trip
+// even when nobody is looking, making the form feel sluggish.
+const refreshPreview = debounce(() => {
+  if (!hasAnyPreviewConsumer()) return
+
+  Livewire.dispatch('refreshPreview')
+}, 500)
+
+function bindLivePreviewFormListeners() {
   const livePreviewForm = document.querySelector('[data-live-preview-form]')
+  if (!livePreviewForm) return
+  if (livePreviewForm.dataset.livePreviewBound === 'true') return
 
-  if (livePreviewForm) {
-    const refreshPreviewEvent = () => $modal.refreshPreview()
+  livePreviewForm.dataset.livePreviewBound = 'true'
 
-    livePreviewForm.addEventListener('input', refreshPreviewEvent)
-    livePreviewForm.addEventListener('change', refreshPreviewEvent)
-    window.addEventListener('submit', refreshPreviewEvent)
-    livePreviewForm.addEventListener('mouseup', refreshPreviewEvent)
-    livePreviewForm.addEventListener('keyup', refreshPreviewEvent)
+  // Native events cover regular field edits.
+  livePreviewForm.addEventListener('change', refreshPreview)
+  livePreviewForm.addEventListener('input', refreshPreview)
+  window.addEventListener('submit', refreshPreview)
+}
+
+document.addEventListener('DOMContentLoaded', bindLivePreviewFormListeners)
+document.addEventListener('livewire:init', bindLivePreviewFormListeners)
+document.addEventListener('livewire:navigated', bindLivePreviewFormListeners)
+
+// Inputs that commit their value through a Livewire modal (attachment
+// picker, architect editor, etc.) never fire native input/change events on
+// the form root — the user clicks a button inside the modal and the new
+// value is pushed back via a Livewire request. We listen to Livewire's
+// `commit` hook so any successful server round-trip retriggers the preview.
+//
+// To avoid an infinite loop with our own refresh round-trip we scan the
+// whole commit payload for the string `refreshPreview`; Livewire's commit
+// shape changes across versions and putting the marker anywhere in it is
+// enough to identify the response to our own dispatch.
+document.addEventListener('livewire:init', () => {
+  if (typeof Livewire?.hook !== 'function') return
+
+  Livewire.hook('commit', ({ component, commit, succeed }) => {
+    succeed(() => {
+      const componentName = component?.name ?? ''
+      if (componentName.includes('live-preview')) return
+
+      let payload = ''
+      try {
+        payload = JSON.stringify(commit ?? {})
+      } catch (e) {
+        payload = ''
+      }
+      if (payload.includes('refreshPreview')) return
+
+      refreshPreview()
+    })
+  })
+})
+
+// Browsers only honour window.open when called synchronously from a real
+// user gesture. The Filament action does a Livewire round-trip before the
+// URL is known, so by the time the backend dispatches `open-preview-new-tab`
+// the gesture has expired and popup blockers drop the call. To work around
+// that, we intercept the click in the capture phase and pre-open a blank
+// tab while the gesture is still alive, then redirect it once the URL
+// arrives from the server.
+document.addEventListener(
+  'click',
+  (event) => {
+    const trigger = event.target.closest('[data-live-preview-open-tab]')
+    if (!trigger) return
+
+    if (!hasNewTabConsumer()) {
+      livePreviewWindow = window.open('about:blank', 'filament-live-preview')
+    } else {
+      livePreviewWindow.focus()
+    }
+  },
+  true
+)
+
+window.addEventListener('open-preview-new-tab', (event) => {
+  const url = event?.detail?.iframeUrl ?? event?.detail?.[0]?.iframeUrl
+  if (!url) return
+
+  if (hasNewTabConsumer()) {
+    livePreviewWindow.location.href = url
+    livePreviewWindow.focus()
+  } else {
+    // Fallback if no pre-opened tab is available (e.g. trigger missing
+    // the data attribute). Likely to be blocked, but we still try.
+    livePreviewWindow = window.open(url, 'filament-live-preview')
   }
+
+  startWatchingNewTab()
 })
