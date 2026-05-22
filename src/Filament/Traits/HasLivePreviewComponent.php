@@ -4,7 +4,6 @@ namespace Wotz\FilamentLivePreview\Filament\Traits;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Support\Enums\Size;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
