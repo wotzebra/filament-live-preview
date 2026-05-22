@@ -2,6 +2,9 @@
 
 namespace Wotz\FilamentLivePreview\Filament\Traits;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Support\Enums\Size;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -204,6 +207,28 @@ trait HasLivePreviewComponent
         } else {
             $this->closePreview();
         }
+    }
+
+    public function getLivePreviewAction(): ActionGroup
+    {
+        return ActionGroup::make([
+            Action::make('preview')
+                ->label(__('filament-live-preview::action.open in sidebar'))
+                ->icon('heroicon-o-eye')
+                ->color('gray')
+                ->action(fn () => $this->toggleIsPreviewing()),
+
+            Action::make('previewInTab')
+                ->label(__('filament-live-preview::action.open in new tab'))
+                ->icon('heroicon-o-arrow-top-right-on-square')
+                ->color('gray')
+                ->extraAttributes(['data-live-preview-open-tab' => true])
+                ->action(fn () => $this->openPreviewInNewTab()),
+        ])
+            ->label(__('filament-live-preview::action.preview'))
+            ->icon('heroicon-m-ellipsis-vertical')
+            ->color('primary')
+            ->button();
     }
 
     #[On('refreshPreview')]
