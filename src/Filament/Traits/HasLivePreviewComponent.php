@@ -226,7 +226,9 @@ trait HasLivePreviewComponent
         ])
             ->label(__('filament-live-preview::action.preview'))
             ->icon('heroicon-m-ellipsis-vertical')
-            ->color('primary')
+            // Secondary: previewing is never the primary action on an edit page — saving
+            // is. Chain ->color('primary') on the returned group to opt back in.
+            ->color('gray')
             ->button();
     }
 
