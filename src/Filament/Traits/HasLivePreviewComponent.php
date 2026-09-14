@@ -5,6 +5,7 @@ namespace Wotz\FilamentLivePreview\Filament\Traits;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Support\Exceptions\Halt;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -213,20 +214,21 @@ trait HasLivePreviewComponent
         return ActionGroup::make([
             Action::make('preview')
                 ->label(__('filament-live-preview::action.open in sidebar'))
-                ->icon('heroicon-o-eye')
+                ->icon(Heroicon::OutlinedEye)
                 ->color('gray')
                 ->action(fn () => $this->toggleIsPreviewing()),
 
             Action::make('previewInTab')
                 ->label(__('filament-live-preview::action.open in new tab'))
-                ->icon('heroicon-o-arrow-top-right-on-square')
+                ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
                 ->color('gray')
                 ->extraAttributes(['data-live-preview-open-tab' => true])
                 ->action(fn () => $this->openPreviewInNewTab()),
         ])
             ->label(__('filament-live-preview::action.preview'))
-            ->icon('heroicon-m-ellipsis-vertical')
-            ->color('primary')
+            ->icon(Heroicon::EllipsisVertical)
+            // Secondary: previewing is never the primary action on an edit page — saving is.
+            ->color('gray')
             ->button();
     }
 
