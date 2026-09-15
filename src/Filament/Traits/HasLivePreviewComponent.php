@@ -226,7 +226,6 @@ trait HasLivePreviewComponent
                 ->action(fn () => $this->openPreviewInNewTab()),
         ])
             ->label(__('filament-live-preview::action.preview'))
-            ->icon(Heroicon::EllipsisVertical)
             // Secondary: previewing is never the primary action on an edit page — saving is.
             ->color('gray')
             ->button();
