@@ -2,7 +2,6 @@
 
 namespace Wotz\FilamentLivePreview\Livewire;
 
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Wotz\FilamentLivePreview\CachedPreview;
@@ -47,7 +46,5 @@ class LivePreviewScreen extends Component
 
         $this->view = $preview->view;
         $this->data = $preview->data;
-
-        Log::info('Live preview refreshed', [$this->view, $this->data]);
     }
 }

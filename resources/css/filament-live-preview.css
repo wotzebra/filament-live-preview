@@ -1,6 +1,11 @@
 .filament-peek-modal {
     position: sticky;
     top: 4rem;
+    /*
+     * The panel needs a height of its own: the fullscreen preset sizes the iframe at
+     * 100%, which otherwise falls back to the browser's 150px default.
+     */
+    height: calc(100svh - 5rem);
 
     --filament-peek-panel-header-height: 4.8rem;
     --filament-peek-builder-actions-height: 4.25rem;
@@ -9,6 +14,7 @@
 .filament-peek-panel {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .filament-peek-panel-header {
@@ -25,6 +31,7 @@
 
 .filament-peek-panel-body {
     flex-grow: 1;
+    min-height: 0;
     padding: calc(var(--spacing) * 4);
 
     &.allow-iframe-overflow {

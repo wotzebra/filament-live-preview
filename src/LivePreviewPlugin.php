@@ -6,8 +6,6 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
-use Livewire\Livewire;
-use Wotz\FilamentLivePreview\Livewire\LivePreviewScreen;
 
 class LivePreviewPlugin implements Plugin
 {
@@ -41,16 +39,6 @@ class LivePreviewPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        Livewire::component(
-            'filament-live-preview::live-preview-screen',
-            LivePreviewScreen::class
-        );
-
-        $panel->renderHook(
-            'panels::body.end',
-            fn () => view('filament-peek::preview-modal'),
-        );
-
         if ($this->shouldLoadPluginScripts()) {
             FilamentAsset::register([
                 Js::make(static::ID, __DIR__ . '/../resources/dist/filament-live-preview.js'),
