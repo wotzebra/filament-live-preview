@@ -3,6 +3,7 @@
 namespace Wotz\FilamentLivePreview\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Wotz\FilamentLivePreview\Providers\FilamentLivePreviewServiceProvider;
 
@@ -20,6 +21,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            LivewireServiceProvider::class,
             FilamentLivePreviewServiceProvider::class,
         ];
     }

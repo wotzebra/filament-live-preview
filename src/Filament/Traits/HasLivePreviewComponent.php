@@ -8,7 +8,6 @@ use Filament\Support\Exceptions\Halt;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Livewire\Attributes\On;
 use Pboivin\FilamentPeek\Facades\Peek;
@@ -98,8 +97,6 @@ trait HasLivePreviewComponent
         } elseif (method_exists($this, 'getRecord')) {
             $record = $this->getRecord();
         }
-
-        Log::info($this->token, $this->data);
 
         return array_merge(
             $this->initialPreviewModalData,
